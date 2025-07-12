@@ -18,10 +18,8 @@ namespace Library_Management_System.Application.Services.Implementations
         }
         public async Task<BookDto> CreateBookAsync(CreateBookDto dto)
         {
-            if (string.IsNullOrWhiteSpace(dto.Title) ||
-                 string.IsNullOrWhiteSpace(dto.Author) ||
-                 string.IsNullOrWhiteSpace(dto.ISBN))
-                throw new ArgumentException("Missing required fields");
+            if ((await _bookRepo.GetAllAsync()).Any(u => u.Title == dto.Title))
+                throw new ArgumentException("Title already taken");
 
             var book = _mapper.Map<Book>(dto);
             var created = await _bookRepo.AddAsync(book);
@@ -70,6 +68,7 @@ namespace Library_Management_System.Application.Services.Implementations
         {
             var book = await _bookRepo.GetByIdAsync(id);
             if (book == null) throw new KeyNotFoundException("Book not found");
+           
 
             _mapper.Map(dto, book);
             await _bookRepo.UpdateAsync(book);

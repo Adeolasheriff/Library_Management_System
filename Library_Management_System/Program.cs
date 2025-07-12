@@ -12,8 +12,23 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Library_Management_System.Common;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using Library_Management_System.Common.FluentValidations;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateBookDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateBookDtoValidator>();
+
+
+
+
+
 //Add services to the container.
 builder.Services.AddAuthentication(options =>
 {
@@ -34,10 +49,12 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Library API", Version = "v1" });
 
-    // Add JWT support in Swagger
+    // Added JWT support in Swagger
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        // to test in swagger when user signIn successfully,A token will
+        // be generated.click on the lock icon Enter bearer with a space then your token
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: bearer {token}\"",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
@@ -90,7 +107,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
