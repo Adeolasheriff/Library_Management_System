@@ -14,7 +14,7 @@
   "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=LibraryDb;Trusted_Connection=True;TrustServercertificatte = true"
 }
 4. Run the Application
- 1. Dotnet run on vscode or hit the https on visual studio
+ 1. Dotnet watch run on vscode or hit the https on visual studio
 
  ## How to test
  Once the application begins to run on swagger 
